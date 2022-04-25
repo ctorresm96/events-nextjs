@@ -1,12 +1,10 @@
 export async function getAllEvents() {
-  console.log('aea')
   const response = await fetch(
     "https://nextjs-projects-1-default-rtdb.firebaseio.com/events.json"
   );
   const data = await response.json();
   const events = [];
 
-  console.log(data)
   for (const key in data) {
     events.push({
       id: key,
@@ -25,4 +23,16 @@ export async function getFeaturedEvents() {
 export async function getEventById(id) {
   const allEvents = await getAllEvents();
   return allEvents.find((e) => e.id === id);
+}
+
+export async function getFilteredEvents(dateFilter) {
+  const { year, month } = dateFilter;
+  const allEvents = await getAllEvents();
+
+  return allEvents.filter((event) => {
+    const eventDate = new Date(event.date);
+    return (
+      eventDate.getFullYear() === year && eventDate.getMonth() === month - 1
+    );
+  });
 }
